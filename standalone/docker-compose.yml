@@ -1,0 +1,15 @@
+version: '3'
+services:
+  humio:
+    image: humio/humio
+    container_name: humio
+    env_file: .env
+    volumes:
+      - ./data:/data
+      - ./read-only:/etc/humio:ro
+    ulimits:
+      nofile:
+        soft: 8192
+        hard: 8192
+    ports:
+      - "8080:8080"
