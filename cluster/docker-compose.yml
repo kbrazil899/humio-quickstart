@@ -13,9 +13,11 @@ services:
     extra_hosts:
       - "kafka1:172.20.128.2"
       - "kafka2:172.20.128.3"
-      - "zookeeper1:172.20.128.4"
-      - "zookeeper2:172.20.128.5"
-      - "humio1:172.20.128.6"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
   kafka2:
     image: humio/kafka
     container_name: humio-kafka2
@@ -29,9 +31,29 @@ services:
     extra_hosts:
       - "kafka1:172.20.128.2"
       - "kafka2:172.20.128.3"
-      - "zookeeper1:172.20.128.4"
-      - "zookeeper2:172.20.128.5"
-      - "humio1:172.20.128.6"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
+  kafka3:
+    image: humio/kafka
+    container_name: humio-kafka3
+    volumes:
+      - ./kafka3/kafka-data:/data/kafka-data
+      - ./kafka3/logs:/products/kafka/logs
+      - ./kafka3/kafka.properties:/etc/kafka/kafka.properties
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.4
+    extra_hosts:
+      - "kafka1:172.20.128.2"
+      - "kafka2:172.20.128.3"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
   zookeeper1:
     image: humio/zookeeper
     container_name: humio-zookeeper1
@@ -41,13 +63,15 @@ services:
       - ./zookeeper1/zookeeper.properties:/etc/kafka/zookeeper.properties
     networks:
       static-network:
-        ipv4_address: 172.20.128.4
+        ipv4_address: 172.20.128.5
     extra_hosts:
       - "kafka1:172.20.128.2"
       - "kafka2:172.20.128.3"
-      - "zookeeper1:172.20.128.4"
-      - "zookeeper2:172.20.128.5"
-      - "humio1:172.20.128.6"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
   zookeeper2:
     image: humio/zookeeper
     container_name: humio-zookeeper2
@@ -57,13 +81,15 @@ services:
       - ./zookeeper2/zookeeper.properties:/etc/kafka/zookeeper.properties
     networks:
       static-network:
-        ipv4_address: 172.20.128.5
+        ipv4_address: 172.20.128.6
     extra_hosts:
       - "kafka1:172.20.128.2"
       - "kafka2:172.20.128.3"
-      - "zookeeper1:172.20.128.4"
-      - "zookeeper2:172.20.128.5"
-      - "humio1:172.20.128.6"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
   humio1:
     image: humio/humio-core
     container_name: humio-core1
@@ -74,18 +100,48 @@ services:
       - ./humio1/backup:/backup
     networks:
       static-network:
-        ipv4_address: 172.20.128.6
+        ipv4_address: 172.20.128.7
     ports:
       - "8080:8080"
     extra_hosts:
       - "kafka1:172.20.128.2"
       - "kafka2:172.20.128.3"
-      - "zookeeper1:172.20.128.4"
-      - "zookeeper2:172.20.128.5"
-      - "humio1:172.20.128.6"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
     depends_on:
       - kafka1
       - kafka2
+      - kafka3
+      - zookeeper1
+      - zookeeper2
+  humio2:
+    image: humio/humio-core
+    container_name: humio-core2
+    env_file: ./humio2/.env
+    volumes:
+      - ./humio2/humio-data:/data/humio-data
+      - ./humio2/logs:/data/logs
+      - ./humio2/backup:/backup
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.8
+    ports:
+      - "8081:8080"
+    extra_hosts:
+      - "kafka1:172.20.128.2"
+      - "kafka2:172.20.128.3"
+      - "kafka3:172.20.128.4"
+      - "zookeeper1:172.20.128.5"
+      - "zookeeper2:172.20.128.6"
+      - "humio1:172.20.128.7"
+      - "humio1:172.20.128.8"
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
       - zookeeper1
       - zookeeper2
 networks:
