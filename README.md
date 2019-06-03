@@ -6,6 +6,9 @@ of Humio running locally.
 You can find more information on installing Humio yourself outside of this
 project in the Humio documentation: https://docs.humio.com/installation/
 
+If you have trouble getting the container running, check our Docker
+documentation: https://docs.humio.com/installation/docker/
+
 ## Getting Started
 
 You can run Humio in two different configurations: clustered or standalone. In
